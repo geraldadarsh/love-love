@@ -1,6 +1,4 @@
 import streamlit as st
-from wordcloud import WordCloud
-import matplotlib.pyplot as plt
 import random
 
 # Page configuration
@@ -88,26 +86,6 @@ love_messages = [
     "Dearest Jeru, you are not just my girlfriend, you are my best friend, my inspiration, and my greatest love. Thank you for being you! 🌺"
 ]
 
-# Function to generate word cloud
-def create_wordcloud(text):
-    wordcloud = WordCloud(
-        width=800,
-        height=400,
-        background_color="white",
-        colormap="Reds",
-        max_words=100,
-        relative_scaling=0.5,
-        min_font_size=12
-    ).generate(text)
-    
-    fig, ax = plt.subplots(figsize=(12, 6))
-    ax.imshow(wordcloud, interpolation="bilinear")
-    ax.axis("off")
-    ax.set_title("💕 Words of Love for Jeru 💕", fontsize=20, color='#FF69B4', pad=20, weight='bold')
-    plt.tight_layout()
-    
-    return fig
-
 # Initialize session state
 if 'message_count' not in st.session_state:
     st.session_state.message_count = 0
@@ -143,12 +121,29 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# Create and display word cloud
-st.markdown('<h3 style="color: #FF69B4; text-align: center; margin: 2rem 0;">💖 Word Cloud of Love 💖</h3>', unsafe_allow_html=True)
+# Beautiful text-based word display instead of word cloud
+st.markdown('<h3 style="color: #FF69B4; text-align: center; margin: 2rem 0;">💖 Key Words of Love 💖</h3>', unsafe_allow_html=True)
 
-fig = create_wordcloud(st.session_state.current_message)
-st.pyplot(fig)
-plt.close()
+# Extract key romantic words from the message
+def extract_love_words(message):
+    love_words = ['love', 'beautiful', 'amazing', 'special', 'wonderful', 'grateful', 'happiness', 'joy', 'treasure', 'perfect', 'best', 'favorite', 'magical', 'blessed', 'heart', 'smile', 'laugh', 'sunshine', 'angel', 'darling']
+    words_in_message = []
+    message_lower = message.lower()
+    for word in love_words:
+        if word in message_lower:
+            words_in_message.append(word.title())
+    return words_in_message[:8]  # Limit to 8 words
+
+key_words = extract_love_words(st.session_state.current_message)
+if key_words:
+    words_html = " • ".join(key_words)
+    st.markdown(f"""
+    <div style="text-align: center; padding: 2rem; background: linear-gradient(45deg, #FFE4E1, #FFF0F5); border-radius: 15px; margin: 1rem 0;">
+        <p style="color: #FF69B4; font-size: 1.5rem; font-weight: bold; letter-spacing: 2px;">
+            {words_html}
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
 # Center the surprise button
 col1, col2, col3 = st.columns([1, 2, 1])
